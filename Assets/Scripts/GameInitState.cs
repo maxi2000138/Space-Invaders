@@ -18,6 +18,7 @@
     {
         _gameFactory.InstantiatePlayer();
         _gameFactory.InstantiateHUD();
+        _gameFactory.InsantiateEnemies();
     }
 
     public void Exit()
