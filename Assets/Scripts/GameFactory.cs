@@ -28,6 +28,11 @@ namespace Scenes
             }
         }
 
+        public void InstantiateBullet(Vector3 spawnPosition)
+        {
+            Instantiate(spawnPosition, Pathes.DefaultBulletPath);
+        }
+
 
         private void Instantiate(Vector3 position, string path) => 
             Object.Instantiate(Resources.Load(path), position, Quaternion.identity);

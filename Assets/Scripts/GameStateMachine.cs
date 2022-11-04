@@ -13,6 +13,7 @@ public class GameStateMachine
         {
             [typeof(BootstrapState)] = new BootstrapState(this, services),
             [typeof(GameInitState)] = new GameInitState(this, services.Single<IGameFactory>()),
+            [typeof(GameLoopState)] = new GameLoopState(this),
         };
     }
 

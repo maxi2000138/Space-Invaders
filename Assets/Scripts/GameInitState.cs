@@ -19,6 +19,8 @@
         _gameFactory.InstantiatePlayer();
         _gameFactory.InstantiateHUD();
         _gameFactory.InsantiateEnemies();
+        
+        _gameStateMachine.Enter<GameLoopState>();
     }
 
     public void Exit()
