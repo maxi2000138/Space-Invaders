@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterController: {fileID: 9116713139249000100}
-  _playerSpeed: 3
+  _playerSpeed: 4.5
   _leftRightOffset: 0
   _upDownOffset: -0.2
 --- !u!143 &9116713139249000100
