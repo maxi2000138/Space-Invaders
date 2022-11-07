@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 
@@ -13,8 +14,9 @@ public static class PlayingFieldBorders
         Camera camera = Camera.main;
         if (camera == null)
         {
-            Debug.Log("Camera null!\nCan't find bounds");
+            throw new Exception("Camera null!\nCan't find bounds");
         }
+        
         else
         {
             LeftBoundX = camera.ScreenToWorldPoint(Vector3.zero).x;

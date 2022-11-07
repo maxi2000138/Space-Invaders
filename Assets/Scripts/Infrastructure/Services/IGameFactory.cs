@@ -9,6 +9,7 @@ namespace Infrastructure.Services
         void InstantiatePlayer();
         void InstantiateHUD();
         void InstantiateEnemies(Action<EnemyBehaviour> onEnemyDie = null);
-        GameObject InstantiateBullet(Vector3 spawnPosition);
+        GameObject InstantiateBullet();
+        
     }
 }

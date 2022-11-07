@@ -1,5 +1,7 @@
 ﻿using System;
+using Bullet;
 using Enemy;
+using Player;
 using UnityEngine;
 
 namespace Infrastructure.Services
@@ -39,13 +41,13 @@ namespace Infrastructure.Services
             }
         }
 
-        public GameObject InstantiateBullet(Vector3 spawnPosition) => 
-            Instantiate(spawnPosition, PrefabsPaths.DefaultBulletPath);
+        public GameObject InstantiateBullet() => 
+            Instantiate(PrefabsPaths.DefaultBulletPath);
 
         private GameObject Instantiate(Vector3 position, string path) => 
             UnityEngine.Object.Instantiate(Resources.Load(path), position, Quaternion.identity) as GameObject;
 
-        private void Instantiate(string path) => 
-            UnityEngine.Object.Instantiate(Resources.Load(path));
+        public GameObject Instantiate(string path) => 
+            UnityEngine.Object.Instantiate(Resources.Load(path)) as GameObject;
     }
 }

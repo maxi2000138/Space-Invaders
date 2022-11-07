@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Player
@@ -15,15 +16,17 @@ namespace Player
 
         private OwnInput _input;
         private Vector2 _curMovementVector;
+        
         private float _leftBoundX;
         private float _rightBoundX;
         private float _upBoundY;
         private float _downBoundY;
+        
 
         private void Awake()
         {
             _input = new OwnInput();
-            _input.Enable();
+            _input.Player.Enable();
         }
 
         public void Start()
@@ -43,6 +46,8 @@ namespace Player
             if (_curMovementVector != Vector2.zero) 
                 OnMove(_curMovementVector);
         }
+
+        
 
 
         public void OnMove(Vector2 movementVector)
