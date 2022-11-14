@@ -8,8 +8,13 @@ namespace Infrastructure.Services
     {
         void InstantiatePlayer();
         void InstantiateHUD();
-        void InstantiateEnemies(Action<EnemyBehaviour> onEnemyDie = null);
+        GameObject InstantiateEnemy();
         GameObject InstantiateBullet();
-        
+
+        void FindGameWorldSetup();
+        Transform PlayerSpawnPoint { get; }
+        GameObject[] EnemiesSpawns { get; }
+        void InstantiateBulletPool();
+        void InstantiateEnemyPool();
     }
 }

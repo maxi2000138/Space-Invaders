@@ -6,5 +6,7 @@
     public const string EnemyPath = "Enemy/Enemy";
     public const string HudPath = "Hud/HUD";
     public const string DefaultBulletPath = "Bullets/DefaultBullet";
-    
+    public const string BulletPoolPath = "Pools/BulletPool";
+    public const string EnemyPoolPath = "Pools/EnemyPool";
+
 }

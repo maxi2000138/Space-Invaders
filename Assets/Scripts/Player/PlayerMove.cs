@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Player
 {
@@ -27,6 +28,7 @@ namespace Player
         {
             _input = new OwnInput();
             _input.Player.Enable();
+            _input.Player.Move.performed += OnMove2;
         }
 
         public void Start()
@@ -41,13 +43,11 @@ namespace Player
  
         private void FixedUpdate()
         {
-            _curMovementVector = _input.Player.Move.ReadValue<Vector2>();
+           // _curMovementVector = _input.Player.Move.ReadValue<Vector2>();
 
-            if (_curMovementVector != Vector2.zero) 
-                OnMove(_curMovementVector);
+            //if (_curMovementVector != Vector2.zero) 
+             //    OnMove(_curMovementVector);
         }
-
-        
 
 
         public void OnMove(Vector2 movementVector)
@@ -57,6 +57,15 @@ namespace Player
             {
                 _characterController.Move(deltaPosition);
             }
+        }
+
+        public void OnMove2(InputAction.CallbackContext position)
+        {
+
+            Vector3 deltaPos = position.ReadValue<Vector2>();
+            deltaPos = Camera.main.ScreenToWorldPoint(deltaPos);
+            deltaPos.z = transform.position.z;
+            transform.position = deltaPos;
         }
 
         private bool ValidateMovementVector(Vector3 tempPosition)

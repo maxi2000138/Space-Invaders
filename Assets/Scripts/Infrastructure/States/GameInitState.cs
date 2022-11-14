@@ -18,28 +18,23 @@ namespace Infrastructure.States
 
         public void Enter()
         {
+            _gameFactory.FindGameWorldSetup();
             InitGameWorld();
-        }
-
-        private void InitGameWorld()
-        {
-            _gameFactory.InstantiatePlayer();
-            _gameFactory.InstantiateHUD();
-            _gameFactory.InstantiateEnemies(OnEnemyDie);
-        
-            _gameStateMachine.Enter<GameLoopState>();
-        }
-
-        void OnEnemyDie(EnemyBehaviour enemyBehaviour)
-        {
-            Debug.Log("Kill");
-            Object.Destroy(enemyBehaviour.gameObject);
-
         }
 
         public void Exit()
         {
         
+        }
+
+        private void InitGameWorld()
+        {
+            _gameFactory.InstantiateBulletPool();
+            _gameFactory.InstantiateEnemyPool();
+            _gameFactory.InstantiatePlayer();
+            _gameFactory.InstantiateHUD();
+            
+            _gameStateMachine.Enter<GameLoopState>();
         }
     }    
 }

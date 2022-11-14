@@ -1,48 +1,64 @@
 ﻿using System;
-using Bullet;
 using Enemy;
-using Player;
 using UnityEngine;
 
 namespace Infrastructure.Services
 {
     public class GameFactory : IGameFactory
     {
-        private readonly Transform _playerSpawnPoint;
-        private readonly GameObject[] _enemiesSpawns;
-        private IGameFactory _gameFactoryImplementation;
+        public Transform PlayerSpawnPoint { get; private set; }
+        public GameObject[] EnemiesSpawns { get; private set; }
 
+        private BulletPool _bulletPool;
 
-        public GameFactory()
+        private EnemyPool _enemyPool;
+
+        public void FindGameWorldSetup()
         {
-            _playerSpawnPoint = GameObject.FindGameObjectWithTag(PrefabsPaths.PlayerSpawnPointTag).gameObject.transform;
-            _enemiesSpawns = GameObject.FindGameObjectsWithTag(PrefabsPaths.EnemySpawnPointTag);
+            PlayerSpawnPoint = GameObject.FindGameObjectWithTag(PrefabsPaths.PlayerSpawnPointTag).gameObject.transform;
+            EnemiesSpawns = GameObject.FindGameObjectsWithTag(PrefabsPaths.EnemySpawnPointTag);
         }
 
         public void InstantiatePlayer() => 
-            Instantiate(_playerSpawnPoint.position, PrefabsPaths.PlayerPath);
+            Instantiate(PlayerSpawnPoint.position, PrefabsPaths.PlayerPath);
 
         public void InstantiateHUD() => 
             Instantiate(PrefabsPaths.HudPath);
 
-        public void InstantiateEnemies(Action<EnemyBehaviour> enemyDied = null)
-        {
-            foreach (GameObject spawnPoint in _enemiesSpawns)
-            {
-                object obj = Instantiate(spawnPoint.transform.position, PrefabsPaths.EnemyPath);
-                if (obj is GameObject enemy)
-                {
-                    enemy.GetComponent<EnemyBehaviour>().OnEnemyDie += enemyDied;
-                }
-                else
-                {
-                    Debug.Log("Error while creating enemy!");
-                }
-            }
-        }
-
         public GameObject InstantiateBullet() => 
             Instantiate(PrefabsPaths.DefaultBulletPath);
+
+        public void InstantiateBulletPool()
+        {
+            GameObject pool = Instantiate(PrefabsPaths.BulletPoolPath);
+            _bulletPool = pool.GetComponent<BulletPool>();
+        }
+
+        public void InstantiateEnemyPool()
+        {
+            GameObject pool = Instantiate(PrefabsPaths.EnemyPoolPath);
+            _enemyPool = pool.GetComponent<EnemyPool>();
+        }
+
+
+        public GameObject InstantiateEnemy()
+        {
+            object obj = Instantiate(PrefabsPaths.EnemyPath);
+            
+            if (obj is GameObject enemy)
+            {
+                enemy.GetComponent<EnemyBehaviour>().OnEnemyDie += OnEnemyDie;
+            }
+            else
+            {
+                throw  new Exception("Error while creating enemy!");
+            }
+            
+            return obj as GameObject;
+        }
+        
+        private void OnEnemyDie(EnemyBehaviour enemy) => 
+            _enemyPool.Pool.TurnOffElement(enemy.gameObject);
 
         private GameObject Instantiate(Vector3 position, string path) => 
             UnityEngine.Object.Instantiate(Resources.Load(path), position, Quaternion.identity) as GameObject;

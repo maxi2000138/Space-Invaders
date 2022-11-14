@@ -10,7 +10,7 @@ public class BulletPool : MonoBehaviour
     [Header("Pool settings")]
     [SerializeField] private Transform _bulletContainer;
     [SerializeField] private int _bulletPoolDefaultSize;
-    [SerializeField] private bool _isBulletPoolAutoExpand;
+    [SerializeField] private bool _isBulletPoolAutoExpand;  
 
     public PoolMono Pool;
     

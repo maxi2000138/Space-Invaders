@@ -8,9 +8,9 @@ namespace Infrastructure
     {
         private GameStateMachine _gameStateMachine;
 
-        public Game()
+        public Game(ICoroutineRunner coroutineRunner)
         {
-            _gameStateMachine = new GameStateMachine(AllServices.Container);
+            _gameStateMachine = new GameStateMachine(AllServices.Container, coroutineRunner);
             _gameStateMachine.Enter<BootstrapState>();
         }
     }    

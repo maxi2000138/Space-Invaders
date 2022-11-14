@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 907812708583676657}
   - component: {fileID: 907812708583676656}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ProjectileSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: -2388576693402582002}
   - component: {fileID: 8692719581901785335}
   - component: {fileID: 6062292917191493885}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DefaultBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}

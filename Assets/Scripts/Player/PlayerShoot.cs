@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using Infrastructure.Services;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 
 namespace Player
@@ -17,13 +19,19 @@ namespace Player
         private IGameFactory _gameFactory;
         private OwnInput _input;
 
+        private bool _shouldShoot;
+
+        private InputAction.CallbackContext ctxer;
+
         private void Start()
         {
             _input = new OwnInput();
             _input.Player.Enable();
-            _input.Player.Fire.performed += Shoot;
+            _input.Player.Fire.started += ctx => StartCoroutine(AutoShoot(ctx));
 
-            _bulletPool = GameObject.FindObjectOfType<BulletPool>();
+
+
+                _bulletPool = GameObject.FindObjectOfType<BulletPool>();
         }
     
     
@@ -39,12 +47,25 @@ namespace Player
             if (_bulletPool.Pool.CheckAndGetFreeElement(out bullet))
             {
                 bullet.transform.position = bulletSpawnPosition;
+                bullet.transform.rotation = transform.rotation;
             }
             else
             {
                 throw new Exception("Error to create bullet!");
             }
 
+        }
+
+        IEnumerator AutoShoot(InputAction.CallbackContext ctx)
+        {
+            while(true)
+            {
+                yield return new WaitForSeconds(Random.Range(0.5f, 1.5f));
+                if (ctx.canceled)
+                    yield break;
+                Shoot(ctx);
+                
+            }
         }
     }
     

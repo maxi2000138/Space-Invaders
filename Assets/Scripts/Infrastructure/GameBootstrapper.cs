@@ -2,13 +2,18 @@ using UnityEngine;
 
 namespace Infrastructure
 {
-    public class GameBootstrapper : MonoBehaviour
+    public class GameBootstrapper : MonoBehaviour, ICoroutineRunner
     {
         private Game _game;
 
         private void Awake()
         {
-            _game = new Game();
+            GameBootstrapper[] bootstrappers = GameObject.FindObjectsOfType<GameBootstrapper>();
+
+            if(bootstrappers.Length > 1)
+                return; 
+
+            _game = new Game(this);
 
             DontDestroyOnLoad(this);
         }
