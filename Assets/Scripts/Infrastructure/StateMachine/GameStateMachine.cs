@@ -16,7 +16,8 @@ namespace Infrastructure.StateMachine
             {
                 [typeof(BootstrapState)] = new BootstrapState(this, services, coroutineRunner),
                 [typeof(LoadLevelState)] = new LoadLevelState(this, services.Single<ILoadLevelService>(), services.Single<IGameFactory>()),
-                [typeof(GameInitState)] = new GameInitState(this, services.Single<IGameFactory>()),
+                [typeof(GameInitState)] = new GameInitState(this, services.Single<IGameFactory>(), 
+                    services.Single<IPersistantProgressService>(), services.Single<ISaveLoadService>()),
                 [typeof(GameLoopState)] = new GameLoopState(this),
             };
         }

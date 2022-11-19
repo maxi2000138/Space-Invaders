@@ -10,8 +10,11 @@ namespace Infrastructure
         {
             GameBootstrapper[] bootstrappers = GameObject.FindObjectsOfType<GameBootstrapper>();
 
-            if(bootstrappers.Length > 1)
-                return; 
+            if (bootstrappers.Length > 1)
+            {
+                Destroy(gameObject);
+                return;
+            }
 
             _game = new Game(this);
 

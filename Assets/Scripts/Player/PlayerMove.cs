@@ -40,15 +40,6 @@ namespace Player
             _downBoundY = PlayingFieldBorders.DownBoundY + defaultOffset + _upDownOffset;
 
         }
- 
-        private void FixedUpdate()
-        {
-           // _curMovementVector = _input.Player.Move.ReadValue<Vector2>();
-
-            //if (_curMovementVector != Vector2.zero) 
-             //    OnMove(_curMovementVector);
-        }
-
 
         public void OnMove(Vector2 movementVector)
         {

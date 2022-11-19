@@ -9,11 +9,15 @@ namespace Infrastructure.States
     {
         private readonly GameStateMachine _gameStateMachine;
         private readonly IGameFactory _gameFactory;
+        private readonly IPersistantProgressService _progressService;
+        private readonly ISaveLoadService _saveLoadService;
 
-        public GameInitState(GameStateMachine gameStateMachine, IGameFactory gameFactory)
+        public GameInitState(GameStateMachine gameStateMachine, IGameFactory gameFactory, IPersistantProgressService progressService, ISaveLoadService saveLoadService)
         {
             _gameStateMachine = gameStateMachine;
             _gameFactory = gameFactory;
+            _progressService = progressService;
+            _saveLoadService = saveLoadService;
         }
 
         public void Enter()
@@ -33,8 +37,19 @@ namespace Infrastructure.States
             _gameFactory.InstantiateEnemyPool();
             _gameFactory.InstantiatePlayer();
             _gameFactory.InstantiateHUD();
+
+            LoadProgressOrInit();
             
             _gameStateMachine.Enter<GameLoopState>();
+        }
+
+        private void LoadProgressOrInit()
+        {
+             _progressService.PlayerProgress = _saveLoadService.LoadProgress() ?? new PlayerProgress();
+             foreach (IProgressReader reader in _gameFactory.ProgressReaders)
+             {
+                 reader.LoadProgress(_progressService.PlayerProgress);
+             }
         }
     }    
 }
