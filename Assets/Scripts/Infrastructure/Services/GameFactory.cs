@@ -50,19 +50,19 @@ namespace Infrastructure.Services
         public GameObject InstantiateEnemy()
         {
             object obj = InstantiateRegistered(PrefabsPaths.EnemyPath);
-            
+
             if (obj is GameObject enemy)
             {
                 enemy.GetComponent<EnemyBehaviour>().OnEnemyDie += OnEnemyDie;
             }
             else
             {
-                throw  new Exception("Error while creating enemy!");
+                throw new Exception("Error while creating enemy!");
             }
-            
+
             return obj as GameObject;
         }
-        
+
         private void OnEnemyDie(EnemyBehaviour enemy)
         {
             _enemyPool.Pool.TurnOffElement(enemy.gameObject);
@@ -107,5 +107,6 @@ namespace Infrastructure.Services
 
             return obj;
         }
+
     }
 }

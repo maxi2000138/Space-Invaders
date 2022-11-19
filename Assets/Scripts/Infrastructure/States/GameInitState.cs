@@ -33,15 +33,22 @@ namespace Infrastructure.States
 
         private void InitGameWorld()
         {
+            StopGame();
+            _gameFactory.InstantiateHUD();
             _gameFactory.InstantiateBulletPool();
             _gameFactory.InstantiateEnemyPool();
             _gameFactory.InstantiatePlayer();
-            _gameFactory.InstantiateHUD();
-
+            
             LoadProgressOrInit();
             
             _gameStateMachine.Enter<GameLoopState>();
         }
+
+        public void StopGame()
+        {
+            Time.timeScale = 0f;
+        }
+        
 
         private void LoadProgressOrInit()
         {
