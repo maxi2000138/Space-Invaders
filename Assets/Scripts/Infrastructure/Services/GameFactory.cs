@@ -3,19 +3,26 @@ using System.Collections.Generic;
 using Enemy;
 using UnityEngine;
 using UnityEngine.InputSystem.Processors;
+using Object = UnityEngine.Object;
 
 namespace Infrastructure.Services
 {
     public class GameFactory : IGameFactory
     {
         public Transform PlayerSpawnPoint { get; private set; }
-        public GameObject[] EnemiesSpawns { get; private set; }
-        private BulletPool _bulletPool;
-        private EnemyPool _enemyPool;
-        private HighScoreCounter _scoreCounter;
         public List<IProgressReader> ProgressReaders { get; set; } = new List<IProgressReader>();
         public List<IProgressWatcher> ProgressWatchers { get; set; } = new List<IProgressWatcher>();
+        public GameObject[] EnemiesSpawns { get; private set; }
+        private BulletPool _bulletPool;
+        private IEnemyStaticDataService _staticData;
+        private EnemyPool _enemyPool;
+        private HighScoreCounter _scoreCounter;
 
+        public GameFactory(IEnemyStaticDataService staticData)
+        {
+            _staticData = staticData;
+        }
+        
         public void FindGameWorldSetup()
         {
             PlayerSpawnPoint = GameObject.FindGameObjectWithTag(PrefabsPaths.PlayerSpawnPointTag).gameObject.transform;
@@ -31,6 +38,7 @@ namespace Infrastructure.Services
             _scoreCounter = HUD.GetComponent<HighScoreCounter>();
         }
 
+    
         public GameObject InstantiateBullet() => 
             InstantiateRegistered(PrefabsPaths.DefaultBulletPath);
 
@@ -46,25 +54,27 @@ namespace Infrastructure.Services
             _enemyPool = pool.GetComponent<EnemyPool>();
         }
 
-
-        public GameObject InstantiateEnemy()
+        public EnemyData CreateEnemy(EnemyTypeId typeId = EnemyTypeId.WhiteEnemy)
         {
-            object obj = InstantiateRegistered(PrefabsPaths.EnemyPath);
+            EnemyData data = new EnemyData(EnemiesSpawns[0].transform.position, typeId);
+            InstantiateEnemy(typeId, EnemiesSpawns[0].transform.position);  
+            return data;
+        }
 
-            if (obj is GameObject enemy)
-            {
-                enemy.GetComponent<EnemyBehaviour>().OnEnemyDie += OnEnemyDie;
-            }
-            else
-            {
-                throw new Exception("Error while creating enemy!");
-            }
 
-            return obj as GameObject;
+        private GameObject InstantiateEnemy(EnemyTypeId typeId, Vector3 pos)
+        {
+            EnemyStaticData enemyData = GameObject.Instantiate(_staticData.GiveEnemy(typeId));
+            GameObject enemy = Object.Instantiate(enemyData.Prefab);
+            
+            enemy.GetComponent<EnemyBehaviour>().OnEnemyDie += OnEnemyDie;
+            enemy.transform.position = EnemiesSpawns[0].transform.position;
+            return enemy;
         }
 
         private void OnEnemyDie(EnemyBehaviour enemy)
         {
+            enemy.OnEnemyDie -= OnEnemyDie;
             _enemyPool.Pool.TurnOffElement(enemy.gameObject);
             _scoreCounter._score++;
             AllServices.Container.Single<ISaveLoadService>().SaveProgress();

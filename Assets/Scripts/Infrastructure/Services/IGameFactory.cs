@@ -11,7 +11,6 @@ namespace Infrastructure.Services
         List<IProgressReader> ProgressReaders { get; set; }
         void InstantiatePlayer();
         void InstantiateHUD();
-        GameObject InstantiateEnemy();
         GameObject InstantiateBullet();
 
         void FindGameWorldSetup();
@@ -19,5 +18,6 @@ namespace Infrastructure.Services
         GameObject[] EnemiesSpawns { get; }
         void InstantiateBulletPool();
         void InstantiateEnemyPool();
+        EnemyData CreateEnemy(EnemyTypeId typeId = EnemyTypeId.WhiteEnemy);
     }
 }

@@ -52,11 +52,11 @@ namespace Player
 
         public void OnMove2(InputAction.CallbackContext position)
         {
-
             Vector3 deltaPos = position.ReadValue<Vector2>();
             deltaPos = Camera.main.ScreenToWorldPoint(deltaPos);
             deltaPos.z = transform.position.z;
-            transform.position = deltaPos;
+            deltaPos -= transform.position;
+            transform.Translate(deltaPos);
         }
 
         private bool ValidateMovementVector(Vector3 tempPosition)

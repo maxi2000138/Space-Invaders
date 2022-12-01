@@ -14,13 +14,11 @@ public class EnemyPool : MonoBehaviour
     
     private IGameFactory _gameFactory;
 
-
     private void Start()
     {
         _gameFactory = AllServices.Container.Single<IGameFactory>();
         
-        Pool = new PoolMono(_enemyContainer, _enemyPoolDefaultSize, _enemyPoolAutoExpand,
-            _gameFactory.InstantiateEnemy);
+        Pool = new PoolMono(_enemyContainer, _enemyPoolDefaultSize, _enemyPoolAutoExpand);
 
         foreach (GameObject spawn in _gameFactory.EnemiesSpawns)
         {
@@ -30,7 +28,7 @@ public class EnemyPool : MonoBehaviour
             }
         }
         
-        
+                
     }
 
     private void SetupLevel()

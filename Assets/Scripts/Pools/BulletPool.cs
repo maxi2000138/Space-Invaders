@@ -21,8 +21,7 @@ public class BulletPool : MonoBehaviour
     {
         _gameFactory = AllServices.Container.Single<IGameFactory>();
         
-        Pool = new PoolMono(_bulletContainer, _bulletPoolDefaultSize, _isBulletPoolAutoExpand,
-            _gameFactory.InstantiateBullet);
+        Pool = new PoolMono(_bulletContainer, _bulletPoolDefaultSize, _isBulletPoolAutoExpand);
         
     }
     

@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using Infrastructure.Services;
 using UnityEngine;
+using Object = System.Object;
 
-public class PoolMono 
+public class PoolMono
 {
     private bool _autoExpand;
     private Transform _container;
     private List<GameObject> _pool;
-    private Func<GameObject> _instantiateMethod;
+    private EnemyStaticData _enemyStaticData;
 
-    public PoolMono(Transform container, int size, bool autoExpand, Func<GameObject> instantiateMethod)
-    {
+    public PoolMono(Transform container, int size, bool autoExpand) {
         _pool = new List<GameObject>(new GameObject[size]);
         _container = container;
         _autoExpand = autoExpand;
-        _instantiateMethod = instantiateMethod;
         
         for(int i = 0; i < size; i++)
         {
@@ -24,7 +24,7 @@ public class PoolMono
     
     private GameObject CreateAndReturnElement(bool isActiveByDefault)
     {
-        GameObject element = _instantiateMethod();
+        GameObject element = new GameObject();
         element.transform.SetParent(_container);
         element.SetActive(isActiveByDefault);
         return element;

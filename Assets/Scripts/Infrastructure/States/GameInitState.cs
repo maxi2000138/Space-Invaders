@@ -47,6 +47,7 @@ namespace Infrastructure.States
         public void StopGame()
         {
             Time.timeScale = 0f;
+            //OwnInput.PlayerActions
         }
         
 
