@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: NewLevel
   m_EditorClassIdentifier: 
   Enemies:
-  - _position: {x: 0, y: 0, z: 0}
+  - _position: {x: -4.74, y: 5.29, z: 0}
     _typeId: 0
