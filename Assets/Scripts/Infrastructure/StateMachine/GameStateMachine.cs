@@ -15,10 +15,11 @@ namespace Infrastructure.StateMachine
             _states = new Dictionary<Type, IExitableState>()
             {
                 [typeof(BootstrapState)] = new BootstrapState(this, services, coroutineRunner),
-                [typeof(LoadLevelState)] = new LoadLevelState(this, services.Single<ILoadLevelService>(), services.Single<IGameFactory>()),
+                [typeof(LoadLevelState)] = new LoadLevelState(this, services.Single<ILoadLevelService>(),services.Single<IGameFactory>()),
                 [typeof(GameInitState)] = new GameInitState(this, services.Single<IGameFactory>(), 
                     services.Single<IPersistantProgressService>(), services.Single<ISaveLoadService>()),
                 [typeof(GameLoopState)] = new GameLoopState(this),
+                [typeof(ChangeLevelState)] = new ChangeLevelState(this, services.Single<IGameFactory>(), services.Single<ILevelStaticDataService>()),
             };
         }
 

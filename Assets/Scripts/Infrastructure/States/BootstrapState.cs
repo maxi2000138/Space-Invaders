@@ -36,12 +36,21 @@ namespace Infrastructure.States
 
         private void RegisterServices()
         {
-            RegisterEnemyStaticDataService();   
+            RegisterEnemyStaticDataService();
             _services.RegisterServices<IGameFactory>(new GameFactory(_services.Single<IEnemyStaticDataService>()));
             _services.RegisterServices<ILoadLevelService>(new LoadLevelService(_coroutineRunner));
             _services.RegisterServices<IPersistantProgressService>(new PersistantProgressService());
             _services.RegisterServices<ISaveLoadService>(new SaveLoadService(_services.Single<IGameFactory>(), 
                 _services.Single<IPersistantProgressService>()));
+            RegisterEnemyStaticDataService();
+            RegisterLevelStaticDataService();
+        }
+
+        private void RegisterLevelStaticDataService()
+        {
+            LevelStaticDataService levelStaticData = new LevelStaticDataService();
+            levelStaticData.LoadLevels();
+            _services.RegisterServices<ILevelStaticDataService>(levelStaticData);
         }
 
         private void RegisterEnemyStaticDataService()

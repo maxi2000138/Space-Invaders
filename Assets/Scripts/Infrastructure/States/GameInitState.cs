@@ -11,8 +11,10 @@ namespace Infrastructure.States
         private readonly IGameFactory _gameFactory;
         private readonly IPersistantProgressService _progressService;
         private readonly ISaveLoadService _saveLoadService;
+        private readonly ILevelStaticDataService _levelStaticDataService;
 
-        public GameInitState(GameStateMachine gameStateMachine, IGameFactory gameFactory, IPersistantProgressService progressService, ISaveLoadService saveLoadService)
+        public GameInitState(GameStateMachine gameStateMachine, IGameFactory gameFactory,
+            IPersistantProgressService progressService, ISaveLoadService saveLoadService)
         {
             _gameStateMachine = gameStateMachine;
             _gameFactory = gameFactory;
@@ -41,7 +43,7 @@ namespace Infrastructure.States
             
             LoadProgressOrInit();
             
-            _gameStateMachine.Enter<GameLoopState>();
+            _gameStateMachine.Enter<ChangeLevelState>();
         }
 
         public void StopGame()

@@ -6,8 +6,6 @@ public class EnemyStaticData : ScriptableObject
     [Space(10)]
     public EnemyTypeId TypeId;
     [Space(10)]
-    public Color32 GizmosColor;
-    [Space(10)]
     [Range(0,50)]
     public int HP;
     [Space(10)]

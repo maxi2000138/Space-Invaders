@@ -12,7 +12,6 @@ namespace Infrastructure.Services
         public Transform PlayerSpawnPoint { get; private set; }
         public List<IProgressReader> ProgressReaders { get; set; } = new List<IProgressReader>();
         public List<IProgressWatcher> ProgressWatchers { get; set; } = new List<IProgressWatcher>();
-        public GameObject[] EnemiesSpawns { get; private set; }
         private BulletPool _bulletPool;
         private IEnemyStaticDataService _staticData;
         private EnemyPool _enemyPool;
@@ -26,7 +25,6 @@ namespace Infrastructure.Services
         public void FindGameWorldSetup()
         {
             PlayerSpawnPoint = GameObject.FindGameObjectWithTag(PrefabsPaths.PlayerSpawnPointTag).gameObject.transform;
-            EnemiesSpawns = GameObject.FindGameObjectsWithTag(PrefabsPaths.EnemySpawnPointTag);
         }
 
         public void InstantiatePlayer() => 
@@ -54,21 +52,20 @@ namespace Infrastructure.Services
             _enemyPool = pool.GetComponent<EnemyPool>();
         }
 
-        public EnemyData CreateEnemy(EnemyTypeId typeId = EnemyTypeId.WhiteEnemy)
+        public void CreateEnemiesOnLevel(LevelStaticData staticData)
         {
-            EnemyData data = new EnemyData(EnemiesSpawns[0].transform.position, typeId);
-            InstantiateEnemy(typeId, EnemiesSpawns[0].transform.position);  
-            return data;
+            foreach (EnemyData enemy in staticData.Enemies)
+            {
+                InstantiateEnemy(enemy);
+            }
         }
 
-
-        private GameObject InstantiateEnemy(EnemyTypeId typeId, Vector3 pos)
+        private GameObject InstantiateEnemy(EnemyData enemyData)
         {
-            EnemyStaticData enemyData = GameObject.Instantiate(_staticData.GiveEnemy(typeId));
-            GameObject enemy = Object.Instantiate(enemyData.Prefab);
-            
+            EnemyStaticData staticData = GameObject.Instantiate(_staticData.GiveEnemy(enemyData._typeId));
+            GameObject enemy = Object.Instantiate(staticData.Prefab);
             enemy.GetComponent<EnemyBehaviour>().OnEnemyDie += OnEnemyDie;
-            enemy.transform.position = EnemiesSpawns[0].transform.position;
+            enemy.transform.position = enemyData._position;
             return enemy;
         }
 

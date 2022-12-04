@@ -15,9 +15,8 @@ namespace Infrastructure.Services
 
         void FindGameWorldSetup();
         Transform PlayerSpawnPoint { get; }
-        GameObject[] EnemiesSpawns { get; }
         void InstantiateBulletPool();
         void InstantiateEnemyPool();
-        EnemyData CreateEnemy(EnemyTypeId typeId = EnemyTypeId.WhiteEnemy);
+        void CreateEnemiesOnLevel(LevelStaticData staticData);
     }
 }

@@ -17,15 +17,8 @@ public class EnemyDataCustomEditor : Editor
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
-        if (_isObjectsDestroy)
-        {
-            if (!GUILayout.Button("Visualize"))
-            {
-                return;
-            }
-
-            _isObjectsDestroy = false;
-        }
+        
+      
         
         LevelStaticData data = (LevelStaticData)target;
         if (_visualizer == null)
@@ -33,10 +26,18 @@ public class EnemyDataCustomEditor : Editor
             _visualizer = FindObjectOfType<EnemyVisualizing>();
             if (_visualizer == null)
             {
-                GameObject go = new GameObject();
-                go.name = "Visualizer";
-                _visualizer = go.AddComponent<EnemyVisualizing>();    
+                if (GUILayout.Button("Visualize"))
+                {
+                    GameObject go = new GameObject();
+                    go.name = "Visualizer";
+                    _visualizer = go.AddComponent<EnemyVisualizing>();   
+                }
+                else
+                {
+                    return;
+                }
             }
+            
         }
         
         _visualizer._enemies = data.Enemies;
