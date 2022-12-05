@@ -12,7 +12,10 @@ public class EnemyDataCustomEditor : Editor
     private EnemyVisualizing _visualizer; 
     private bool _isObjectsDestroy = false;
     private string _index;
-    
+    private Transform _enemyPlane;
+    private Transform _startPoint;
+    private Transform _endPoint;
+
 
     public override void OnInspectorGUI()
     {
@@ -39,7 +42,10 @@ public class EnemyDataCustomEditor : Editor
             }
             
         }
-        
+
+        _enemyPlane = GameObject.FindGameObjectWithTag("EnemyPlane").transform;
+        _startPoint = GameObject.FindGameObjectWithTag("EnemyPlaneStart").transform;
+        _endPoint = GameObject.FindGameObjectWithTag("EnemyPlaneEnd").transform;
         _visualizer._enemies = data.Enemies;
         VisualizeAllEnemies(data);
 
@@ -71,7 +77,7 @@ public class EnemyDataCustomEditor : Editor
         {
             for (int i = 0; i < _visualizer._enemiesObjects.Count; i++)
             {
-                _visualizer._enemies[i]._position = _visualizer._enemiesObjects[i].transform.position;
+                _visualizer._enemies[i]._position = ConvertPosition(_visualizer._enemiesObjects[i].transform.position);
             }
                 Debug.Log("Layout saved!");
         }
@@ -100,17 +106,29 @@ public class EnemyDataCustomEditor : Editor
                 VisualizeAndSetupEnemy(enemyData);
             }
     }
-
+    
     private void CreateEnemy(EnemyData enemyData)
     {
         _visualizer._enemies.Add(enemyData);
     }
 
+    private Vector3 ConvertPosition(Vector3 position)
+    {
+        float width = _endPoint.position.x - _startPoint.position.x;
+        float height = _endPoint.position.y - _startPoint.position.y;
+        return new Vector3((position.x - _startPoint.position.x)/width, (position.y - _startPoint.position.y) / height, 0f);
+    }
+
     private void VisualizeAndSetupEnemy(EnemyData enemyData)
     {
+        float width = _endPoint.position.x - _startPoint.position.x;
+        float height = _endPoint.position.y - _startPoint.position.y;
+        
         GameObject go = new GameObject();
         _visualizer._enemiesObjects.Add(go);
-        go.transform.position = enemyData._position;
+        go.transform.parent = _enemyPlane;
+        go.transform.position = new Vector3(_startPoint.position.x + enemyData._position.x * width,
+            _startPoint.position.y + enemyData._position.y * height, _startPoint.position.z);
         go.AddComponent<DrawSphereInGizmos>().Construct(go.transform, _visualizer._sphereRadius, GiveColor(enemyData));
         go.name = "Element " + _visualizer._orderNumber++;
     }

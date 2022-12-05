@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Enemy;
+using Player;
 using UnityEngine;
 using UnityEngine.InputSystem.Processors;
 using Object = UnityEngine.Object;
@@ -12,14 +13,14 @@ namespace Infrastructure.Services
         public Transform PlayerSpawnPoint { get; private set; }
         public List<IProgressReader> ProgressReaders { get; set; } = new List<IProgressReader>();
         public List<IProgressWatcher> ProgressWatchers { get; set; } = new List<IProgressWatcher>();
-        private BulletPool _bulletPool;
-        private IEnemyStaticDataService _staticData;
-        private EnemyPool _enemyPool;
+        private IEnemyStaticDataService _enemyStaticData;
+        private ILevelStaticDataService _levelStaticDataService;
         private HighScoreCounter _scoreCounter;
-
-        public GameFactory(IEnemyStaticDataService staticData)
+        private Destroyer _destroyer;
+        public GameFactory(IEnemyStaticDataService enemyStaticData, ILevelStaticDataService levelStaticDataService)
         {
-            _staticData = staticData;
+            _enemyStaticData = enemyStaticData;
+            _levelStaticDataService = levelStaticDataService;
         }
         
         public void FindGameWorldSetup()
@@ -27,31 +28,24 @@ namespace Infrastructure.Services
             PlayerSpawnPoint = GameObject.FindGameObjectWithTag(PrefabsPaths.PlayerSpawnPointTag).gameObject.transform;
         }
 
-        public void InstantiatePlayer() => 
-            InstantiateRegistered(PlayerSpawnPoint.position, PrefabsPaths.PlayerPath);
+        public void InstantiatePlayer()
+        {
+            GameObject go = InstantiateRegistered(PlayerSpawnPoint.position, PrefabsPaths.PlayerPath);
+            go.GetComponent<PlayerShoot>().Construct(this);
+        }
+
+        public void InstantiateDestroyer() => 
+            _destroyer = InstantiateRegistered(PrefabsPaths.DestroyerPath).GetComponent<Destroyer>();
 
         public void InstantiateHUD()
         {
             GameObject HUD = InstantiateRegistered(PrefabsPaths.HudPath);
             _scoreCounter = HUD.GetComponent<HighScoreCounter>();
         }
-
-    
+        
         public GameObject InstantiateBullet() => 
             InstantiateRegistered(PrefabsPaths.DefaultBulletPath);
-
-        public void InstantiateBulletPool()
-        {
-            GameObject pool = InstantiateRegistered(PrefabsPaths.BulletPoolPath);
-            _bulletPool = pool.GetComponent<BulletPool>();
-        }
-
-        public void InstantiateEnemyPool()
-        {
-            GameObject pool = InstantiateRegistered(PrefabsPaths.EnemyPoolPath);
-            _enemyPool = pool.GetComponent<EnemyPool>();
-        }
-
+        
         public void CreateEnemiesOnLevel(LevelStaticData staticData)
         {
             foreach (EnemyData enemy in staticData.Enemies)
@@ -62,7 +56,7 @@ namespace Infrastructure.Services
 
         private GameObject InstantiateEnemy(EnemyData enemyData)
         {
-            EnemyStaticData staticData = GameObject.Instantiate(_staticData.GiveEnemy(enemyData._typeId));
+            EnemyStaticData staticData = GameObject.Instantiate(_enemyStaticData.GiveEnemy(enemyData._typeId));
             GameObject enemy = Object.Instantiate(staticData.Prefab);
             enemy.GetComponent<EnemyBehaviour>().OnEnemyDie += OnEnemyDie;
             enemy.transform.position = enemyData._position;
@@ -72,7 +66,7 @@ namespace Infrastructure.Services
         private void OnEnemyDie(EnemyBehaviour enemy)
         {
             enemy.OnEnemyDie -= OnEnemyDie;
-            _enemyPool.Pool.TurnOffElement(enemy.gameObject);
+            _destroyer.DestroyEnemy(enemy);
             _scoreCounter._score++;
             AllServices.Container.Single<ISaveLoadService>().SaveProgress();
             _scoreCounter.ShowScore();

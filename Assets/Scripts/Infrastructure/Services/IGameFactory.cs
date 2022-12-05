@@ -15,8 +15,7 @@ namespace Infrastructure.Services
 
         void FindGameWorldSetup();
         Transform PlayerSpawnPoint { get; }
-        void InstantiateBulletPool();
-        void InstantiateEnemyPool();
         void CreateEnemiesOnLevel(LevelStaticData staticData);
+        void InstantiateDestroyer();
     }
 }

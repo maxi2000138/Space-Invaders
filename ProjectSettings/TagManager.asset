@@ -6,6 +6,9 @@ TagManager:
   tags:
   - PlayerSpawn
   - EnemySpawn
+  - EnemyPlane
+  - EnemyPlaneStart
+  - EnemyPlaneEnd
   layers:
   - Default
   - TransparentFX

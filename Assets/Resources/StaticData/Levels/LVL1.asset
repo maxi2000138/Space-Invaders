@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe186e56a73d49647a276bd7a5a7d35a, type: 3}
   m_Name: LVL1
   m_EditorClassIdentifier: 
+  LevelNumber: 0
   Enemies:
-  - _position: {x: -1.16, y: 1.58, z: 0}
+  - _position: {x: 0.271, y: 0.775, z: 0}
+    _typeId: 0
+  - _position: {x: 0.86, y: 0.166, z: 0}
     _typeId: 0

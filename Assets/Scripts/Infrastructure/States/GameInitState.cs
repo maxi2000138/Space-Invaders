@@ -37,10 +37,9 @@ namespace Infrastructure.States
         {
             StopGame();
             _gameFactory.InstantiateHUD();
-            _gameFactory.InstantiateBulletPool();
-            _gameFactory.InstantiateEnemyPool();
+            _gameFactory.InstantiateDestroyer();
             _gameFactory.InstantiatePlayer();
-            
+                        
             LoadProgressOrInit();
             
             _gameStateMachine.Enter<ChangeLevelState>();
