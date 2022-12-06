@@ -9,6 +9,7 @@ TagManager:
   - EnemyPlane
   - EnemyPlaneStart
   - EnemyPlaneEnd
+  - StartTransform
   layers:
   - Default
   - TransparentFX

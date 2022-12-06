@@ -17,5 +17,6 @@ namespace Infrastructure.Services
         Transform PlayerSpawnPoint { get; }
         void CreateEnemiesOnLevel(LevelStaticData staticData);
         void InstantiateDestroyer();
+        event Action OnAllEnemiesDye;
     }
 }

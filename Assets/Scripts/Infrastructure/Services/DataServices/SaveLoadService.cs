@@ -1,9 +1,9 @@
- using Infrastructure.Services;
+using Infrastructure.Services;
 using UnityEngine;
 
 public class SaveLoadService : ISaveLoadService
 {
-   private readonly IGameFactory _gameFactory;
+   private  IGameFactory _gameFactory;
    private readonly IPersistantProgressService _persistantProgressService;
 
    private readonly string _progressKey = "PlayerProgress";
@@ -16,6 +16,9 @@ public class SaveLoadService : ISaveLoadService
 
    public void SaveProgress()
    {
+      if (_gameFactory == null)
+         _gameFactory = AllServices.Container.Single<IGameFactory>();
+      
       foreach (IProgressWatcher watcher in _gameFactory.ProgressWatchers)
       {
          watcher.SaveProgress(_persistantProgressService.PlayerProgress);

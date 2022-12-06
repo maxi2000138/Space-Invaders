@@ -18,7 +18,7 @@ namespace Infrastructure.StateMachine
                 [typeof(LoadLevelState)] = new LoadLevelState(this, services.Single<ILoadLevelService>(),services.Single<IGameFactory>()),
                 [typeof(GameInitState)] = new GameInitState(this, services.Single<IGameFactory>(), 
                     services.Single<IPersistantProgressService>(), services.Single<ISaveLoadService>()),
-                [typeof(GameLoopState)] = new GameLoopState(this),
+                [typeof(GameLoopState)] = new GameLoopState(this, services.Single<IGameFactory>()),
                 [typeof(ChangeLevelState)] = new ChangeLevelState(this, services.Single<IGameFactory>(), services.Single<ILevelStaticDataService>()),
             };
         }

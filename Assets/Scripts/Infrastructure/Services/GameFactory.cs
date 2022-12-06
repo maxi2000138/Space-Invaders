@@ -2,25 +2,32 @@
 using System.Collections.Generic;
 using Enemy;
 using Player;
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem.Processors;
 using Object = UnityEngine.Object;
 
 namespace Infrastructure.Services
 {
     public class GameFactory : IGameFactory
     {
+        public event Action OnAllEnemiesDye;
         public Transform PlayerSpawnPoint { get; private set; }
         public List<IProgressReader> ProgressReaders { get; set; } = new List<IProgressReader>();
         public List<IProgressWatcher> ProgressWatchers { get; set; } = new List<IProgressWatcher>();
-        private IEnemyStaticDataService _enemyStaticData;
-        private ILevelStaticDataService _levelStaticDataService;
+        private readonly IEnemyStaticDataService _enemyStaticData;
+        private readonly IScreenCharacteristicsService _screenCharacteristicsService;
+        private readonly ISaveLoadService _saveLoadService;
         private HighScoreCounter _scoreCounter;
         private Destroyer _destroyer;
-        public GameFactory(IEnemyStaticDataService enemyStaticData, ILevelStaticDataService levelStaticDataService)
+        private List<GameObject> _enemies = new List<GameObject>();
+
+        public GameFactory(IEnemyStaticDataService enemyStaticData,
+            IScreenCharacteristicsService screenCharacteristicsService, ISaveLoadService saveLoadService)
         {
             _enemyStaticData = enemyStaticData;
-            _levelStaticDataService = levelStaticDataService;
+            _screenCharacteristicsService = screenCharacteristicsService;
+            _saveLoadService = saveLoadService;
+            _screenCharacteristicsService.Construct();
         }
         
         public void FindGameWorldSetup()
@@ -59,8 +66,16 @@ namespace Infrastructure.Services
             EnemyStaticData staticData = GameObject.Instantiate(_enemyStaticData.GiveEnemy(enemyData._typeId));
             GameObject enemy = Object.Instantiate(staticData.Prefab);
             enemy.GetComponent<EnemyBehaviour>().OnEnemyDie += OnEnemyDie;
-            enemy.transform.position = enemyData._position;
+            enemy.transform.position = GetEnemyPosition(enemyData);
+            _enemies.Add(enemy);
             return enemy;
+        }
+
+        private Vector3 GetEnemyPosition(EnemyData enemyData)
+        {
+            return new Vector3(_screenCharacteristicsService.StartPosition.x + enemyData._position.x * _screenCharacteristicsService.Width,
+                _screenCharacteristicsService.StartPosition.y + enemyData._position.y * _screenCharacteristicsService.Height,
+                _screenCharacteristicsService.StartPosition.z);
         }
 
         private void OnEnemyDie(EnemyBehaviour enemy)
@@ -68,8 +83,16 @@ namespace Infrastructure.Services
             enemy.OnEnemyDie -= OnEnemyDie;
             _destroyer.DestroyEnemy(enemy);
             _scoreCounter._score++;
-            AllServices.Container.Single<ISaveLoadService>().SaveProgress();
+            _saveLoadService.SaveProgress();
             _scoreCounter.ShowScore();
+            _enemies.Remove(enemy.gameObject);
+            CheckAllEnemiesDie();
+        }
+
+        private void CheckAllEnemiesDie()
+        {
+            if(_enemies.Count == 0)
+                OnAllEnemiesDye?.Invoke();
         }
 
         private GameObject InstantiateRegistered(Vector3 position, string path)
