@@ -1,4 +1,4 @@
 public class PlayerProgress
 {
-    public int Score;
+    public int HighScore;
 }

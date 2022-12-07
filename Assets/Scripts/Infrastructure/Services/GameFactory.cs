@@ -17,7 +17,7 @@ namespace Infrastructure.Services
         private readonly IEnemyStaticDataService _enemyStaticData;
         private readonly IScreenCharacteristicsService _screenCharacteristicsService;
         private readonly ISaveLoadService _saveLoadService;
-        private HighScoreCounter _scoreCounter;
+        private ScoreCounter _scoreCounter;
         private Destroyer _destroyer;
         private List<GameObject> _enemies = new List<GameObject>();
 
@@ -47,7 +47,7 @@ namespace Infrastructure.Services
         public void InstantiateHUD()
         {
             GameObject HUD = InstantiateRegistered(PrefabsPaths.HudPath);
-            _scoreCounter = HUD.GetComponent<HighScoreCounter>();
+            _scoreCounter = HUD.GetComponent<ScoreCounter>();
         }
         
         public GameObject InstantiateBullet() => 
@@ -82,9 +82,13 @@ namespace Infrastructure.Services
         {
             enemy.OnEnemyDie -= OnEnemyDie;
             _destroyer.DestroyEnemy(enemy);
-            _scoreCounter._score++;
-            _saveLoadService.SaveProgress();
+            _scoreCounter.Score++;
             _scoreCounter.ShowScore();
+            if (_scoreCounter.CheckHighScore())
+            {
+                _saveLoadService.SaveProgress();
+                _scoreCounter.ShowHighScore();
+            }
             _enemies.Remove(enemy.gameObject);
             CheckAllEnemiesDie();
         }

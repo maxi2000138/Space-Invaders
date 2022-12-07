@@ -9,6 +9,7 @@ namespace Infrastructure.StateMachine
         private readonly IGameFactory _gameFactory;
         private readonly ILevelStaticDataService _levelStaticDataService;
         private int levelNum = 0;
+        
         public ChangeLevelState(GameStateMachine gameStateMachine, IGameFactory gameFactory,
             ILevelStaticDataService levelStaticDataService)
         {
@@ -19,6 +20,7 @@ namespace Infrastructure.StateMachine
 
         public void Enter()
         {
+            
             _gameFactory.CreateEnemiesOnLevel(_levelStaticDataService.GiveLevel(levelNum++));
             _gameStateMachine.Enter<GameLoopState>();
         }

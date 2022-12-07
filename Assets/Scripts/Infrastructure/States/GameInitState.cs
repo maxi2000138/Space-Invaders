@@ -35,11 +35,10 @@ namespace Infrastructure.States
 
         private void InitGameWorld()
         {
-            StopGame();
             _gameFactory.InstantiateHUD();
             _gameFactory.InstantiateDestroyer();
             _gameFactory.InstantiatePlayer();
-                        
+
             LoadProgressOrInit();
             
             _gameStateMachine.Enter<ChangeLevelState>();
