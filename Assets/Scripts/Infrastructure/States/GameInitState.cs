@@ -40,6 +40,7 @@ namespace Infrastructure.States
             _gameFactory.InstantiatePlayer();
 
             LoadProgressOrInit();
+            StopGame();
             
             _gameStateMachine.Enter<ChangeLevelState>();
         }
@@ -47,7 +48,6 @@ namespace Infrastructure.States
         public void StopGame()
         {
             Time.timeScale = 0f;
-            //OwnInput.PlayerActions
         }
         
 

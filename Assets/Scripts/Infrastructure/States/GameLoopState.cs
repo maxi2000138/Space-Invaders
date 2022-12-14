@@ -1,4 +1,5 @@
-﻿using Infrastructure.Services;
+﻿using System;
+using Infrastructure.Services;
 using Infrastructure.StateMachine;
 
 namespace Infrastructure.States
@@ -12,7 +13,7 @@ namespace Infrastructure.States
         {
             _gameStateMachine = gameStateMachine;
             _gameFactory = gameFactory;
-            gameFactory.OnAllEnemiesDye += ChangeLevel;
+            _gameFactory.OnAllEnemiesDye += ChangeLevel;
         }
 
         private void ChangeLevel()
@@ -20,14 +21,15 @@ namespace Infrastructure.States
             _gameStateMachine.Enter<ChangeLevelState>();
         }
 
+
         public void Enter()
         {
-          
+
         }
 
         public void Exit()
         {
-            _gameFactory.OnAllEnemiesDye -= ChangeLevel; 
+
         }
     }    
 }

@@ -15,6 +15,7 @@ namespace Infrastructure.Services
 
         void FindGameWorldSetup();
         Transform PlayerSpawnPoint { get; }
+        Blackout Blackout { get; set; }
         void CreateEnemiesOnLevel(LevelStaticData staticData);
         void InstantiateDestroyer();
         event Action OnAllEnemiesDye;

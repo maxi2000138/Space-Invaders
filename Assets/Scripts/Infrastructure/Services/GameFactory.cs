@@ -1,24 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Enemy;
 using Player;
-using Unity.VisualScripting;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Infrastructure.Services
 {
     public class GameFactory : IGameFactory
     {
-        public event Action OnAllEnemiesDye;
+        public event System.Action OnAllEnemiesDye;
         public Transform PlayerSpawnPoint { get; private set; }
         public List<IProgressReader> ProgressReaders { get; set; } = new List<IProgressReader>();
+
         public List<IProgressWatcher> ProgressWatchers { get; set; } = new List<IProgressWatcher>();
+
+        public Blackout Blackout { get; set; }
+        
         private readonly IEnemyStaticDataService _enemyStaticData;
+
         private readonly IScreenCharacteristicsService _screenCharacteristicsService;
+
         private readonly ISaveLoadService _saveLoadService;
+
         private ScoreCounter _scoreCounter;
+
         private Destroyer _destroyer;
+
+
         private List<GameObject> _enemies = new List<GameObject>();
 
         public GameFactory(IEnemyStaticDataService enemyStaticData,
@@ -29,7 +36,7 @@ namespace Infrastructure.Services
             _saveLoadService = saveLoadService;
             _screenCharacteristicsService.Construct();
         }
-        
+
         public void FindGameWorldSetup()
         {
             PlayerSpawnPoint = GameObject.FindGameObjectWithTag(PrefabsPaths.PlayerSpawnPointTag).gameObject.transform;
@@ -48,6 +55,7 @@ namespace Infrastructure.Services
         {
             GameObject HUD = InstantiateRegistered(PrefabsPaths.HudPath);
             _scoreCounter = HUD.GetComponent<ScoreCounter>();
+            Blackout = HUD.GetComponentInChildren<Blackout>();
         }
         
         public GameObject InstantiateBullet() => 
@@ -55,6 +63,12 @@ namespace Infrastructure.Services
         
         public void CreateEnemiesOnLevel(LevelStaticData staticData)
         {
+            if (staticData == null)
+            {
+                Debug.Log("Game end!");
+                return;
+            }
+            _enemies.Clear();
             foreach (EnemyData enemy in staticData.Enemies)
             {
                 InstantiateEnemy(enemy);

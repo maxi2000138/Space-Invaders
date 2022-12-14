@@ -18,8 +18,8 @@ namespace Infrastructure.StateMachine
                 [typeof(LoadLevelState)] = new LoadLevelState(this, services.Single<ILoadLevelService>(),services.Single<IGameFactory>()),
                 [typeof(GameInitState)] = new GameInitState(this, services.Single<IGameFactory>(), 
                     services.Single<IPersistantProgressService>(), services.Single<ISaveLoadService>()),
-                [typeof(GameLoopState)] = new GameLoopState(this, services.Single<IGameFactory>()),
                 [typeof(ChangeLevelState)] = new ChangeLevelState(this, services.Single<IGameFactory>(), services.Single<ILevelStaticDataService>()),
+                [typeof(GameLoopState)] = new GameLoopState(this, services.Single<IGameFactory>()),
             };
         }
 
@@ -27,16 +27,16 @@ namespace Infrastructure.StateMachine
         {
             _curState?.Exit();
             TState state = GetState<TState>();
-            state.Enter();
             _curState = state;
+            state.Enter();
         }
 
         public void Enter<TState, TOverload>(TOverload overload) where TState : class,IOVerloadedState<TOverload>
         {
             _curState?.Exit();
             TState state = GetState<TState>();
-            state.Enter(overload);
             _curState = state;
+            state.Enter(overload);
         }
 
         private TState GetState<TState>() where TState : class,IExitableState
